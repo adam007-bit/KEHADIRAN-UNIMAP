@@ -3,25 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Attend-X UniMAP | Anti-Spam Scanner</title>
+    <title>Attend-X UniMAP | Fast-Lock Scanner</title>
     
     <script src="https://unpkg.com/html5-qrcode"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Plus+Jakarta+Sans:wght@400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Plus+Jakarta+Sans:wght@400;600&display=swap" rel="stylesheet">
 
     <style>
         :root { --unimap-blue: #1e3a8a; --unimap-gold: #fbbf24; --dark-slate: #0f172a; }
         body { background: var(--dark-slate); color: white; font-family: 'Plus Jakarta Sans', sans-serif; min-height: 100vh; }
-        .header-unimap { background: var(--unimap-blue); padding: 20px; border-bottom: 4px solid var(--unimap-gold); box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
+        .header-unimap { background: var(--unimap-blue); padding: 15px; border-bottom: 4px solid var(--unimap-gold); box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
         .system-title { font-family: 'Orbitron', sans-serif; letter-spacing: 2px; }
         .card-custom { background: #1e293b; border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
         #reader { width: 100% !important; border-radius: 20px !important; overflow: hidden; border: 3px solid var(--unimap-gold) !important; background: #000 !important; }
-        .status-box { background: rgba(30, 41, 59, 0.8); border-radius: 15px; padding: 15px; border: 1px solid rgba(56, 189, 248, 0.3); }
-        .log-container { height: 450px; overflow-y: auto; padding-right: 5px; }
+        .status-box { background: rgba(30, 41, 59, 0.8); border-radius: 15px; padding: 12px; border: 1px solid rgba(56, 189, 248, 0.3); }
+        .log-container { height: 420px; overflow-y: auto; padding-right: 5px; }
         .log-item { background: rgba(15, 23, 42, 0.6); border-left: 4px solid var(--unimap-gold); border-radius: 10px; margin-bottom: 10px; padding: 12px; }
+        .gps-active { color: #22c55e !important; text-shadow: 0 0 10px rgba(34, 197, 94, 0.5); }
         .log-container::-webkit-scrollbar { width: 4px; }
         .log-container::-webkit-scrollbar-thumb { background: var(--unimap-gold); border-radius: 10px; }
     </style>
@@ -29,37 +30,35 @@
 <body>
 
     <div class="header-unimap text-center mb-4">
-        <div class="container">
-            <h2 class="system-title fw-bold m-0 text-white">UniMAP ATTEND-X</h2>
-            <p class="m-0 text-info small fw-bold text-uppercase">Anti-Spam Attendance System</p>
-        </div>
+        <h2 class="system-title fw-bold m-0 text-white">UniMAP ATTEND-X</h2>
+        <p class="m-0 text-info small fw-bold">ULTRA-FAST GPS LOCK</p>
     </div>
 
-    <div class="container px-4">
-        <div class="row g-4">
+    <div class="container px-3">
+        <div class="row g-3">
             <div class="col-lg-5">
-                <div class="card-custom p-4 mb-4">
+                <div class="card-custom p-3 mb-3">
                     <div class="status-box mb-3 text-center">
-                        <small class="text-muted d-block mb-1 text-uppercase fw-bold" style="font-size: 0.7rem;">📍 Lokasi Semasa:</small>
-                        <h5 id="locText" class="m-0 text-warning fw-bold">Mencari GPS...</h5>
+                        <small class="text-muted d-block mb-1 text-uppercase fw-bold" style="font-size: 0.6rem;">Status Satelit:</small>
+                        <h5 id="locText" class="m-0 text-warning fw-bold animate__animated animate__flash animate__infinite">MENCARI SIGNAL...</h5>
                     </div>
                     <div id="reader"></div>
                     <div class="mt-3 text-center">
-                        <span class="badge bg-dark border border-secondary px-3 py-2 rounded-pill">
-                            <i class="fas fa-satellite-dish me-2 text-info"></i>GPS Dist: <span id="distVal">0</span>m
+                        <span class="badge bg-dark border border-secondary px-3 py-2 rounded-pill small">
+                            <i class="fas fa-crosshairs me-2 text-info"></i>Jarak: <span id="distVal">0</span>m | Acc: <span id="accVal">0</span>m
                         </span>
                     </div>
                 </div>
             </div>
 
             <div class="col-lg-7">
-                <div class="card-custom p-4 h-100">
-                    <div class="d-flex justify-content-between align-items-center mb-4">
-                        <h6 class="fw-bold m-0"><i class="fas fa-history me-2 text-info"></i>LOG TERKINI</h6>
+                <div class="card-custom p-3 h-100">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h6 class="fw-bold m-0"><i class="fas fa-history me-2 text-info"></i>REKOD HARI INI</h6>
                         <span id="liveTime" class="badge bg-primary px-3 py-2">00:00:00</span>
                     </div>
                     <div id="attendanceLog" class="log-container">
-                        <div class="text-center py-5 opacity-50">Menunggu data...</div>
+                        <div class="text-center py-5 opacity-50"><i class="fas fa-sync fa-spin me-2"></i>Menunggu Data...</div>
                     </div>
                 </div>
             </div>
@@ -84,83 +83,54 @@
         const db = getDatabase(app);
         const today = new Date().toISOString().split('T')[0];
 
+        // KOORDINAT BARU: PAUH PUTRA
         const LOKASI_SAH = [
-            { nama: "FKTEN", lat: 6.456006251479284, lng: 100.19080088169572 },
-            { nama: "Dewan Ilmu", lat: 6.456012700234823, lng: 100.19079871839197 }
+            { nama: "Pauh Putra Campus", lat: 6.459908432966171, lng: 100.35170018848842 }
         ];
 
         let currentHall = null;
-        let isProcessing = false; // Flag untuk elakkan double trigger scanner
+        let isProcessing = false;
 
-        function listenToLogs() {
-            onValue(query(ref(db, `kehadiran_unimap/${today}`), limitToLast(20)), (snapshot) => {
-                const container = document.getElementById('attendanceLog');
-                container.innerHTML = '';
-                if (snapshot.exists()) {
-                    Object.keys(snapshot.val()).reverse().forEach(key => {
-                        const r = snapshot.val()[key];
-                        container.insertAdjacentHTML('beforeend', `
-                            <div class="log-item animate__animated animate__fadeIn">
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <div><div class="fw-bold text-white">${r.studentID}</div><small class="text-info">${r.masa}</small></div>
-                                    <span class="badge bg-primary" style="font-size: 0.6rem;">${r.lokasi}</span>
-                                </div>
-                            </div>`);
-                    });
-                }
-            });
-        }
+        // 1. ENGINE GPS TURBO
+        function startFastGPS() {
+            if (!navigator.geolocation) return;
 
-        async function submitAttendance(studentID) {
-            if (isProcessing) return; // Sekat jika tengah proses
-            if (!currentHall) {
-                return Swal.fire({ title: 'Akses Disekat!', text: 'Anda di luar zon.', icon: 'error' });
-            }
+            const geoOptions = {
+                enableHighAccuracy: true,
+                timeout: 5000,
+                maximumAge: 0
+            };
 
-            isProcessing = true;
-            const studentRef = ref(db, `kehadiran_unimap/${today}/${studentID}`);
+            navigator.geolocation.watchPosition((pos) => {
+                const uLat = pos.coords.latitude;
+                const uLng = pos.coords.longitude;
+                document.getElementById('accVal').innerText = pos.coords.accuracy.toFixed(0);
 
-            try {
-                // --- LOGIK ANTI-SPAM ---
-                const checkSnapshot = await get(studentRef);
-                if (checkSnapshot.exists()) {
-                    Swal.fire({
-                        title: 'Dah Scan!',
-                        text: `ID ${studentID} sudah pun direkodkan tadi.`,
-                        icon: 'warning',
-                        background: '#1e293b', color: '#fff'
-                    });
-                    isProcessing = false;
-                    return;
-                }
+                let nearest = null;
+                let minDist = 999;
 
-                // Jika belum wujud, barulah simpan
-                await set(studentRef, {
-                    studentID: studentID,
-                    lokasi: currentHall,
-                    masa: new Date().toLocaleTimeString('ms-MY'),
-                    timestamp: serverTimestamp()
+                LOKASI_SAH.forEach(loc => {
+                    const d = calculateDistance(uLat, uLng, loc.lat, loc.lng);
+                    if (d < 0.3) { // Radius 300m untuk ketepatan tinggi
+                        nearest = loc.nama;
+                        minDist = d;
+                    }
                 });
 
-                Swal.fire({ title: 'Berjaya!', icon: 'success', timer: 1000, showConfirmButton: false });
-                
-            } catch (e) { console.error(e); }
-            
-            // Tunggu 2 saat sebelum boleh scan ID lain (elakkan lag)
-            setTimeout(() => { isProcessing = false; }, 2000);
-        }
+                document.getElementById('distVal').innerText = (minDist * 1000).toFixed(0);
 
-        // GPS & Scanner Init
-        navigator.geolocation.watchPosition((pos) => {
-            let shortest = 999;
-            LOKASI_SAH.forEach(loc => {
-                const d = calculateDistance(pos.coords.latitude, pos.coords.longitude, loc.lat, loc.lng);
-                if (d < 1.0) { currentHall = loc.nama; shortest = d; }
-            });
-            document.getElementById('distVal').innerText = (shortest * 1000).toFixed(0);
-            document.getElementById('locText').innerText = currentHall || "DI LUAR ZON";
-            document.getElementById('locText').className = currentHall ? "text-success" : "text-danger";
-        }, null, { enableHighAccuracy: true });
+                const locEl = document.getElementById('locText');
+                if (nearest) {
+                    currentHall = nearest;
+                    locEl.innerText = "SIGNAL LOCKED: " + nearest;
+                    locEl.className = "m-0 gps-active fw-bold animate__animated animate__pulse";
+                } else {
+                    currentHall = null;
+                    locEl.innerText = "DI LUAR ZON SAH";
+                    locEl.className = "m-0 text-danger fw-bold";
+                }
+            }, (err) => console.error(err), geoOptions);
+        }
 
         function calculateDistance(lat1, lon1, lat2, lon2) {
             const R = 6371;
@@ -170,9 +140,58 @@
             return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
         }
 
-        const scanner = new Html5QrcodeScanner("reader", { fps: 10, qrbox: 250 });
-        scanner.render((text) => submitAttendance(text));
-        listenToLogs();
+        // 2. SUBMIT & ANTI-SPAM
+        async function submitAttendance(id) {
+            if (isProcessing) return;
+            if (!currentHall) {
+                return Swal.fire({ title: 'Ralat Lokasi', text: 'Sila pastikan anda berada di dalam zon kampus.', icon: 'error' });
+            }
+
+            isProcessing = true;
+            const studentRef = ref(db, `kehadiran_unimap/${today}/${id}`);
+
+            try {
+                const check = await get(studentRef);
+                if (check.exists()) {
+                    Swal.fire({ title: 'Dah Scan!', text: `ID ${id} sudah direkodkan.`, icon: 'warning', timer: 1500 });
+                    isProcessing = false;
+                    return;
+                }
+
+                await set(studentRef, {
+                    studentID: id,
+                    lokasi: currentHall,
+                    masa: new Date().toLocaleTimeString('ms-MY'),
+                    timestamp: serverTimestamp()
+                });
+
+                Swal.fire({ title: 'Berjaya!', icon: 'success', timer: 800, showConfirmButton: false });
+            } catch (e) { console.error(e); }
+            
+            setTimeout(() => { isProcessing = false; }, 2000);
+        }
+
+        // 3. SYNC LOG
+        onValue(query(ref(db, `kehadiran_unimap/${today}`), limitToLast(20)), (snap) => {
+            const container = document.getElementById('attendanceLog');
+            container.innerHTML = '';
+            if (snap.exists()) {
+                Object.keys(snap.val()).reverse().forEach(key => {
+                    const r = snap.val()[key];
+                    container.insertAdjacentHTML('beforeend', `
+                        <div class="log-item animate__animated animate__fadeInDown">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div><div class="fw-bold text-white">${r.studentID}</div><small class="text-info">${r.masa}</small></div>
+                                <span class="badge bg-primary" style="font-size: 0.6rem;">${r.lokasi}</span>
+                            </div>
+                        </div>`);
+                });
+            }
+        });
+
+        const scanner = new Html5QrcodeScanner("reader", { fps: 20, qrbox: 250 });
+        scanner.render((t) => submitAttendance(t));
+        startFastGPS();
         setInterval(() => { document.getElementById('liveTime').innerText = new Date().toLocaleTimeString('ms-MY'); }, 1000);
     </script>
 </body>
