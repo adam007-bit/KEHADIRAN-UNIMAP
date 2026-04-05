@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Attend-X UniMAP | Scanner System</title>
+    <title>Attend-X UniMAP | Anti-Spam Scanner</title>
     
     <script src="https://unpkg.com/html5-qrcode"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -15,56 +15,13 @@
     <style>
         :root { --unimap-blue: #1e3a8a; --unimap-gold: #fbbf24; --dark-slate: #0f172a; }
         body { background: var(--dark-slate); color: white; font-family: 'Plus Jakarta Sans', sans-serif; min-height: 100vh; }
-        
-        .header-unimap { 
-            background: var(--unimap-blue); 
-            padding: 20px; 
-            border-bottom: 4px solid var(--unimap-gold);
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-        }
-
+        .header-unimap { background: var(--unimap-blue); padding: 20px; border-bottom: 4px solid var(--unimap-gold); box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
         .system-title { font-family: 'Orbitron', sans-serif; letter-spacing: 2px; }
-
-        .card-custom { 
-            background: #1e293b; 
-            border: 1px solid rgba(255,255,255,0.1); 
-            border-radius: 20px; 
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-        }
-
-        #reader { 
-            width: 100% !important; 
-            border-radius: 20px !important; 
-            overflow: hidden; 
-            border: 3px solid var(--unimap-gold) !important;
-            background: #000 !important;
-        }
-
-        .status-box { 
-            background: rgba(30, 41, 59, 0.8); 
-            border-radius: 15px; 
-            padding: 15px; 
-            border: 1px solid rgba(56, 189, 248, 0.3);
-        }
-
-        .log-container {
-            height: 450px;
-            overflow-y: auto;
-            padding-right: 5px;
-        }
-
-        .log-item {
-            background: rgba(15, 23, 42, 0.6);
-            border-left: 4px solid var(--unimap-gold);
-            border-radius: 10px;
-            margin-bottom: 10px;
-            padding: 12px;
-            transition: 0.3s;
-        }
-
-        .log-item:hover { background: rgba(30, 41, 59, 0.8); }
-
-        /* Custom Scrollbar */
+        .card-custom { background: #1e293b; border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        #reader { width: 100% !important; border-radius: 20px !important; overflow: hidden; border: 3px solid var(--unimap-gold) !important; background: #000 !important; }
+        .status-box { background: rgba(30, 41, 59, 0.8); border-radius: 15px; padding: 15px; border: 1px solid rgba(56, 189, 248, 0.3); }
+        .log-container { height: 450px; overflow-y: auto; padding-right: 5px; }
+        .log-item { background: rgba(15, 23, 42, 0.6); border-left: 4px solid var(--unimap-gold); border-radius: 10px; margin-bottom: 10px; padding: 12px; }
         .log-container::-webkit-scrollbar { width: 4px; }
         .log-container::-webkit-scrollbar-thumb { background: var(--unimap-gold); border-radius: 10px; }
     </style>
@@ -74,7 +31,7 @@
     <div class="header-unimap text-center mb-4">
         <div class="container">
             <h2 class="system-title fw-bold m-0 text-white">UniMAP ATTEND-X</h2>
-            <p class="m-0 text-info small fw-bold text-uppercase">GPS-BASED ATTENDANCE SCANNER</p>
+            <p class="m-0 text-info small fw-bold text-uppercase">Anti-Spam Attendance System</p>
         </div>
     </div>
 
@@ -83,15 +40,13 @@
             <div class="col-lg-5">
                 <div class="card-custom p-4 mb-4">
                     <div class="status-box mb-3 text-center">
-                        <small class="text-muted d-block mb-1 text-uppercase fw-bold" style="font-size: 0.7rem;">📍 Lokasi Semasa Dikesan:</small>
-                        <h5 id="locText" class="m-0 text-warning fw-bold">Mencari Signal GPS...</h5>
+                        <small class="text-muted d-block mb-1 text-uppercase fw-bold" style="font-size: 0.7rem;">📍 Lokasi Semasa:</small>
+                        <h5 id="locText" class="m-0 text-warning fw-bold">Mencari GPS...</h5>
                     </div>
-
                     <div id="reader"></div>
-                    
                     <div class="mt-3 text-center">
                         <span class="badge bg-dark border border-secondary px-3 py-2 rounded-pill">
-                            <i class="fas fa-satellite-dish me-2 text-info"></i>GPS Magnitude: <span id="distVal">0</span>m
+                            <i class="fas fa-satellite-dish me-2 text-info"></i>GPS Dist: <span id="distVal">0</span>m
                         </span>
                     </div>
                 </div>
@@ -100,15 +55,11 @@
             <div class="col-lg-7">
                 <div class="card-custom p-4 h-100">
                     <div class="d-flex justify-content-between align-items-center mb-4">
-                        <h6 class="fw-bold m-0"><i class="fas fa-history me-2 text-info"></i>LOG KEHADIRAN HARI INI</h6>
+                        <h6 class="fw-bold m-0"><i class="fas fa-history me-2 text-info"></i>LOG TERKINI</h6>
                         <span id="liveTime" class="badge bg-primary px-3 py-2">00:00:00</span>
                     </div>
-
                     <div id="attendanceLog" class="log-container">
-                        <div id="noData" class="text-center py-5 opacity-50">
-                            <i class="fas fa-spinner fa-spin fa-2x mb-3"></i>
-                            <p>Menghubungkan ke Firebase...</p>
-                        </div>
+                        <div class="text-center py-5 opacity-50">Menunggu data...</div>
                     </div>
                 </div>
             </div>
@@ -117,9 +68,8 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.10.0/firebase-app.js";
-        import { getDatabase, ref, set, serverTimestamp, onValue, query, limitToLast } from "https://www.gstatic.com/firebasejs/9.10.0/firebase-database.js";
+        import { getDatabase, ref, set, get, serverTimestamp, onValue, query, limitToLast } from "https://www.gstatic.com/firebasejs/9.10.0/firebase-database.js";
 
-        // 1. Firebase Configuration
         const firebaseConfig = {
             apiKey: "AIzaSyCcl-Uc1euz9f-suw9zRQpmKm6QwjcTRPE",
             authDomain: "kehadiran-unimap.firebaseapp.com",
@@ -134,152 +84,96 @@
         const db = getDatabase(app);
         const today = new Date().toISOString().split('T')[0];
 
-        // 2. Definisi Lokasi (Koordinat Kangar/Pauh yang bos minta)
         const LOKASI_SAH = [
-            { 
-                nama: "Fakulti Teknologi Elektronik (FKTEN)", 
-                lat: 6.456006251479284, 
-                lng: 100.19080088169572 
-            },
-            { 
-                nama: "Dewan Ilmu UniMAP", 
-                lat: 6.456012700234823, 
-                lng: 100.19079871839197 
-            }
+            { nama: "FKTEN", lat: 6.456006251479284, lng: 100.19080088169572 },
+            { nama: "Dewan Ilmu", lat: 6.456012700234823, lng: 100.19079871839197 }
         ];
 
         let currentHall = null;
-        const RADIUS_LIMIT_KM = 1.0; // 1km
+        let isProcessing = false; // Flag untuk elakkan double trigger scanner
 
-        // 3. Fungsi Memaparkan Log Secara Real-time
         function listenToLogs() {
-            const attendanceRef = query(ref(db, `kehadiran_unimap/${today}`), limitToLast(20));
-            
-            onValue(attendanceRef, (snapshot) => {
+            onValue(query(ref(db, `kehadiran_unimap/${today}`), limitToLast(20)), (snapshot) => {
                 const container = document.getElementById('attendanceLog');
-                container.innerHTML = ''; 
-
+                container.innerHTML = '';
                 if (snapshot.exists()) {
-                    const data = snapshot.val();
-                    const sortedKeys = Object.keys(data).reverse(); // Terbaru di atas
-
-                    sortedKeys.forEach(key => {
-                        const record = data[key];
-                        const html = `
-                            <div class="log-item animate__animated animate__fadeInDown">
+                    Object.keys(snapshot.val()).reverse().forEach(key => {
+                        const r = snapshot.val()[key];
+                        container.insertAdjacentHTML('beforeend', `
+                            <div class="log-item animate__animated animate__fadeIn">
                                 <div class="d-flex justify-content-between align-items-center">
-                                    <div>
-                                        <div class="fw-bold text-white">${record.studentID}</div>
-                                        <small class="text-info"><i class="far fa-clock me-1"></i>${record.masa}</small>
-                                    </div>
-                                    <span class="badge bg-primary" style="font-size: 0.6rem;">${record.lokasi}</span>
+                                    <div><div class="fw-bold text-white">${r.studentID}</div><small class="text-info">${r.masa}</small></div>
+                                    <span class="badge bg-primary" style="font-size: 0.6rem;">${r.lokasi}</span>
                                 </div>
-                            </div>`;
-                        container.insertAdjacentHTML('beforeend', html);
+                            </div>`);
                     });
-                } else {
-                    container.innerHTML = `
-                        <div class="text-center py-5 opacity-50">
-                            <i class="fas fa-qrcode fa-3x mb-3"></i>
-                            <p>Tiada rekod kehadiran dikesan hari ini.</p>
-                        </div>`;
                 }
             });
         }
 
-        // 4. Auto-Detect Location Engine
-        function trackLocation() {
-            if (!navigator.geolocation) {
-                Swal.fire('GPS Ralat', 'Browser anda tidak menyokong GPS.', 'error');
-                return;
-            }
-
-            navigator.geolocation.watchPosition((pos) => {
-                const uLat = pos.coords.latitude;
-                const uLng = pos.coords.longitude;
-                let foundHall = null;
-                let shortestDist = 999;
-
-                LOKASI_SAH.forEach(loc => {
-                    const d = calculateDistance(uLat, uLng, loc.lat, loc.lng);
-                    if (d < RADIUS_LIMIT_KM) {
-                        foundHall = loc.nama;
-                        shortestDist = d;
-                    }
-                });
-
-                document.getElementById('distVal').innerText = (shortestDist === 999) ? 0 : (shortestDist * 1000).toFixed(0);
-
-                if (foundHall) {
-                    currentHall = foundHall;
-                    const el = document.getElementById('locText');
-                    el.innerText = foundHall;
-                    el.className = "m-0 text-success animate__animated animate__pulse animate__infinite";
-                } else {
-                    currentHall = null;
-                    document.getElementById('locText').innerText = "DI LUAR KAWASAN KULIAH";
-                    document.getElementById('locText').className = "m-0 text-danger";
-                }
-            }, (err) => {
-                console.error(err);
-            }, { enableHighAccuracy: true });
-        }
-
-        function calculateDistance(lat1, lon1, lat2, lon2) {
-            const R = 6371; 
-            const dLat = (lat2 - lat1) * Math.PI / 180;
-            const dLon = (lon2 - lon1) * Math.PI / 180;
-            const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
-                      Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * Math.sin(dLon/2) * Math.sin(dLon/2);
-            return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-        }
-
-        // 5. Scanner Implementation
-        const scanner = new Html5QrcodeScanner("reader", { fps: 15, qrbox: 250 });
-        scanner.render((decodedText) => submitAttendance(decodedText));
-
         async function submitAttendance(studentID) {
+            if (isProcessing) return; // Sekat jika tengah proses
             if (!currentHall) {
-                return Swal.fire({
-                    title: 'Akses Disekat!',
-                    text: 'Anda tidak berada dalam kawasan sah (Kangar/Dewan).',
-                    icon: 'error',
-                    background: '#1e293b',
-                    color: '#fff'
-                });
+                return Swal.fire({ title: 'Akses Disekat!', text: 'Anda di luar zon.', icon: 'error' });
             }
 
-            const timeStr = new Date().toLocaleTimeString('ms-MY');
+            isProcessing = true;
+            const studentRef = ref(db, `kehadiran_unimap/${today}/${studentID}`);
 
             try {
-                await set(ref(db, `kehadiran_unimap/${today}/${studentID}`), {
+                // --- LOGIK ANTI-SPAM ---
+                const checkSnapshot = await get(studentRef);
+                if (checkSnapshot.exists()) {
+                    Swal.fire({
+                        title: 'Dah Scan!',
+                        text: `ID ${studentID} sudah pun direkodkan tadi.`,
+                        icon: 'warning',
+                        background: '#1e293b', color: '#fff'
+                    });
+                    isProcessing = false;
+                    return;
+                }
+
+                // Jika belum wujud, barulah simpan
+                await set(studentRef, {
                     studentID: studentID,
                     lokasi: currentHall,
-                    masa: timeStr,
+                    masa: new Date().toLocaleTimeString('ms-MY'),
                     timestamp: serverTimestamp()
                 });
 
-                Swal.fire({
-                    title: 'Berjaya!',
-                    icon: 'success',
-                    timer: 800,
-                    showConfirmButton: false
-                });
-
-            } catch (error) {
-                Swal.fire('Ralat Firebase', error.message, 'error');
-            }
+                Swal.fire({ title: 'Berjaya!', icon: 'success', timer: 1000, showConfirmButton: false });
+                
+            } catch (e) { console.error(e); }
+            
+            // Tunggu 2 saat sebelum boleh scan ID lain (elakkan lag)
+            setTimeout(() => { isProcessing = false; }, 2000);
         }
 
-        // Digital Clock Update
-        setInterval(() => {
-            document.getElementById('liveTime').innerText = new Date().toLocaleTimeString('ms-MY');
-        }, 1000);
+        // GPS & Scanner Init
+        navigator.geolocation.watchPosition((pos) => {
+            let shortest = 999;
+            LOKASI_SAH.forEach(loc => {
+                const d = calculateDistance(pos.coords.latitude, pos.coords.longitude, loc.lat, loc.lng);
+                if (d < 1.0) { currentHall = loc.nama; shortest = d; }
+            });
+            document.getElementById('distVal').innerText = (shortest * 1000).toFixed(0);
+            document.getElementById('locText').innerText = currentHall || "DI LUAR ZON";
+            document.getElementById('locText').className = currentHall ? "text-success" : "text-danger";
+        }, null, { enableHighAccuracy: true });
 
-        // Run Initial Functions
-        trackLocation();
+        function calculateDistance(lat1, lon1, lat2, lon2) {
+            const R = 6371;
+            const dLat = (lat2-lat1)*Math.PI/180;
+            const dLon = (lon2-lon1)*Math.PI/180;
+            const a = Math.sin(dLat/2)**2 + Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*Math.sin(dLon/2)**2;
+            return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+        }
+
+        const scanner = new Html5QrcodeScanner("reader", { fps: 10, qrbox: 250 });
+        scanner.render((text) => submitAttendance(text));
         listenToLogs();
-
+        setInterval(() => { document.getElementById('liveTime').innerText = new Date().toLocaleTimeString('ms-MY'); }, 1000);
     </script>
 </body>
 </html>
